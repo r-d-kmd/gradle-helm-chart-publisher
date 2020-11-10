@@ -1,0 +1,13 @@
+sudo: required
+
+language: java
+
+install: ./gradlew assemble
+script: ./gradlew check
+after_success: ./gradlew jacocoTestReport coveralls
+
+jdk:
+  - openjdk8
+
+services:
+  - docker
