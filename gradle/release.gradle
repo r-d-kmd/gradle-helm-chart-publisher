@@ -1,0 +1,25 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url "https://plugins.gradle.org/m2/" }
+	}
+	dependencies {
+		classpath group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.9.3'
+	}
+}
+
+apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
+
+scmVersion {
+	useHighestVersion = true
+	versionCreator 'versionWithBranch'
+	versionIncrementer 'incrementMinor'
+}
+
+task createVersionFile {
+	doLast {
+		description 'Creates "version" file in the build directory with the current version of the project'
+		def versionFile = file("$buildDir/version")
+		versionFile.text = project.version
+	}
+}

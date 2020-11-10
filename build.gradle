@@ -1,0 +1,157 @@
+plugins {
+	id 'groovy'
+	id 'java-gradle-plugin'
+	id 'maven'
+	id 'jacoco'
+	id 'com.gradle.plugin-publish' version '0.12.0'
+	id 'pl.allegro.tech.build.axion-release' version '1.10.3'
+	id 'io.codearte.nexus-staging' version '0.11.0' apply false
+	id 'com.bmuschko.docker-remote-api' version '3.6.2'
+}
+
+group 'dk.kmd.helm.chart.publish'
+version = scmVersion.version
+
+jar {
+	baseName = project.name
+	version = project.version
+}
+
+wrapper {
+	distributionType = Wrapper.DistributionType.ALL
+}
+
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+sourceSets {
+	main {
+		java { srcDirs = [] }    // no source dirs for the java compiler
+		groovy { srcDirs = ["src/main/java", "src/main/groovy"] }  // compile   everything in src/ with groovy
+	}
+
+	integration {
+		java.srcDir project.file('src/integration/java')
+		groovy.srcDir project.file('src/integration/groovy')
+
+		resources.srcDir project.file('src/integration/resources')
+		resources.srcDir project.sourceSets.test.resources
+		resources.srcDir project.sourceSets.main.resources
+
+		compileClasspath = project.sourceSets.main.output +
+			project.sourceSets.test.output +
+			project.configurations.testRuntime
+		runtimeClasspath = output + compileClasspath
+	}
+}
+
+dependencies {
+	compile gradleApi()
+	compile localGroovy()
+
+	compile 'org.ajoberstar.grgit:grgit-core:4.1.0'
+
+	testCompile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
+		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+	}
+	testCompile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
+	testCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
+
+	testCompile gradleTestKit()
+}
+
+test {
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+		exceptionFormat = 'full'
+	}
+}
+
+project.configurations {
+	integration {
+		extendsFrom project.configurations.testRuntime
+		description = 'Dependencies for integration tests'
+		transitive = true
+		visible = true
+	}
+}
+
+task buildDockerImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+	inputDir = file('docker')
+	tag = 'test/helm-chart-publisher-remote:latest'
+}
+
+task createDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
+	dependsOn buildDockerImage
+	targetImageId { buildDockerImage.getImageId() }
+	portBindings = ['2222:22']
+}
+
+task startDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerStartContainer) {
+	dependsOn createDockerContainer
+	targetContainerId { createDockerContainer.getContainerId() }
+}
+
+task stopDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerStopContainer) {
+	targetContainerId { createDockerContainer.getContainerId() }
+}
+
+task integrationTest(type: Test) {
+	testClassesDirs = project.sourceSets.integration.output.classesDirs
+	classpath = project.sourceSets.main.output +
+		project.sourceSets.test.output +
+		project.sourceSets.integration.runtimeClasspath +
+		project.configurations.testRuntime +
+		project.configurations.integrationRuntime
+
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+		showStandardStreams = true
+		exceptionFormat = 'full'
+	}
+
+	dependsOn startDockerContainer
+	finalizedBy stopDockerContainer
+}
+
+tasks.check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+gradlePlugin {
+	testSourceSets(sourceSets.integration)
+}
+
+jacoco {
+	toolVersion = '0.8.2'
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled = true
+		html.enabled = true
+	}
+}
+
+pluginBundle {
+	website = 'https://github.com/r-d-kmd/gradle-helm-chart-publisher'
+	vcsUrl = 'https://github.com/r-d-kmd/gradle-helm-chart-publisher'
+	description = 'Helm chart release plugin that uses git repositories (GitHub for example) as a helm chart repository.'
+	tags = ['helm', 'chart', 'release', 'publish', 'git', 'github']
+
+	plugins {
+		helmChartRelease {
+			id = 'dk.kmd.helm.chart.publish'
+			displayName = 'helm-chart-publisher'
+		}
+	}
+
+	mavenCoordinates {
+		groupId = 'dk.kmd.helm.chart.publish'
+		artifactId = 'helm-chart-publisher'
+	}
+}

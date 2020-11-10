@@ -1,0 +1,13 @@
+# Ignore IntelliJ project files
+*.iml
+.idea/
+
+# Ignore
+.gradle/
+build/
+target/
+logs/
+out/
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
