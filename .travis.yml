@@ -6,9 +6,10 @@ env:
   global:
     - HELM_URL=https://storage.googleapis.com/kubernetes-helm
     - HELM_TGZ=helm-v2.4.1-linux-amd64.tar.gz
+addons:
+  ssh_known_hosts: localhost:2222
 
 install:
-  - ssh-keyscan -H localhost >> ~/.ssh/known_hosts
   - wget -q ${HELM_URL}/${HELM_TGZ}
   - tar xzfv ${HELM_TGZ}
   - PATH=`pwd`/linux-amd64/:$PATH
