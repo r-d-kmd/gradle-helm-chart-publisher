@@ -10,8 +10,8 @@ env:
 install:
   - wget -q ${HELM_URL}/${HELM_TGZ}
   - tar xzfv ${HELM_TGZ}
-  - helm init --client-only
   - PATH=`pwd`/linux-amd64/:$PATH
+  - helm init --client-only
   - ./gradlew assemble
 script: ./gradlew check
 after_success: ./gradlew jacocoTestReport coveralls
