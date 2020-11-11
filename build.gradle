@@ -53,7 +53,7 @@ dependencies {
 	compile gradleApi()
 	compile localGroovy()
 
-	compile 'org.ajoberstar.grgit:grgit-core:4.1.0'
+	compile 'org.ajoberstar.grgit:grgit-core:3.1.0'
 
 	testCompile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
@@ -89,7 +89,7 @@ task buildDockerImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildIm
 task createDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
 	dependsOn buildDockerImage
 	targetImageId { buildDockerImage.getImageId() }
-	portBindings = ['2222:22']
+	portBindings = ['8080:80']
 }
 
 task startDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerStartContainer) {

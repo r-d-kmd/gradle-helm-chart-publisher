@@ -14,9 +14,7 @@ import spock.lang.Specification
 
 class HelmChartPublishTest extends Specification {
 
-	private static final int SSH_PORT = 2222
-
-	static final String GIT_CHART_REPO_URL = "ssh://git@localhost:${SSH_PORT}/git-server/repos/chart-repository"
+	static final String GIT_CHART_REPO_URL = "http://localhost:8080/chart-repo.git"
 
 	@Rule
 	TemporaryFolder temporaryFolder = new TemporaryFolder()
