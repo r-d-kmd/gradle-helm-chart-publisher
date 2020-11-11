@@ -2,7 +2,16 @@ sudo: required
 
 language: java
 
-install: ./gradlew assemble
+env:
+  global:
+    - HELM_URL=https://storage.googleapis.com/kubernetes-helm
+    - HELM_TGZ=helm-v2.4.1-linux-amd64.tar.gz
+
+install:
+  - ./gradlew assemble
+  - wget -q ${HELM_URL}/${HELM_TGZ}
+  - tar xzfv ${HELM_TGZ}
+  - helm init --client-only
 script: ./gradlew check
 after_success: ./gradlew jacocoTestReport coveralls
 
