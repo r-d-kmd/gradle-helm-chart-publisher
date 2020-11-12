@@ -15,7 +15,7 @@ import spock.lang.Specification
 class GitChartRepositoryPropertiesProviderTest extends Specification {
 
 	@Rule
-	public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+	public final EnvironmentVariables environmentVariables = new EnvironmentVariables()
 
 	def "should resolve git repository url from property if set"() {
 		given:
@@ -102,32 +102,4 @@ class GitChartRepositoryPropertiesProviderTest extends Specification {
 		new GitChartRepositoryPropertiesProvider(ProjectBuilder.builder().build(), extensionWithAnyParams()).provide().password == null
 	}
 
-	def "should resolve git chart repository work directory from properties"() {
-		given:
-		def givenWorkDir = randomAlphabetic(4)
-		Project project = ProjectBuilder.builder().build()
-		project.extensions.extraProperties.set("gitChartRepo.workDir", givenWorkDir)
-		def extension = extensionWithAnyParams(gitChartRepoWorkDir: randomAlphabetic(4))
-
-		expect:
-		new GitChartRepositoryPropertiesProvider(project, extension).provide().chartRepoWorkDir == givenWorkDir
-	}
-
-	def "should resolve git chart repository work directory from extension"() {
-		given:
-		def givenWorkDir = randomAlphabetic(4)
-		Project project = ProjectBuilder.builder().build()
-		def extension = extensionWithAnyParams(gitChartRepoWorkDir: givenWorkDir)
-
-		expect:
-		new GitChartRepositoryPropertiesProvider(project, extension).provide().chartRepoWorkDir == givenWorkDir
-	}
-
-	def "should resolve to empty if git chart repository work directory not set"() {
-		given:
-		def extension = extensionWithAnyParams(gitChartRepoWorkDir: null)
-
-		expect:
-		new GitChartRepositoryPropertiesProvider(ProjectBuilder.builder().build(), extension).provide().chartRepoWorkDir == ""
-	}
 }

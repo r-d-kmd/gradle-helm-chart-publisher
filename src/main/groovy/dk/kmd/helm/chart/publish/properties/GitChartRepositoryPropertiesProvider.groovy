@@ -23,8 +23,7 @@ class GitChartRepositoryPropertiesProvider {
 	GitChartRepositoryProperties provide() {
 		return new GitChartRepositoryProperties(url: gitChartRepoUrl(),
 												username: gitChartRepoUsername(),
-												password: gitChartRepoPassword(),
-												chartRepoWorkDir: chartRepositoryWorkDir())
+												password: gitChartRepoPassword())
 	}
 
 	private def gitChartRepoUrl() {
@@ -59,15 +58,5 @@ class GitChartRepositoryPropertiesProvider {
 			return System.getenv(GIT_CHART_REPO_PASSWORD_ENV_VARIABLE)
 		}
 		return null
-	}
-
-	private def chartRepositoryWorkDir() {
-		if (project.hasProperty(GIT_CHART_REPO_WORK_DIR_PROPERTY)) {
-			return project.property(GIT_CHART_REPO_WORK_DIR_PROPERTY)
-		}
-		if (extension.gitChartRepoWorkDir) {
-			return extension.gitChartRepoWorkDir
-		}
-		return ""
 	}
 }

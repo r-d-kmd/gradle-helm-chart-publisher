@@ -17,7 +17,7 @@ class ReleaseHelmChartTask extends DefaultTask {
 
 		def gitChartRepositoryProperties = new GitChartRepositoryPropertiesProvider(project, extension).provide()
 		def chartProperties = new ChartPropertiesProvider(project, extension).provide()
-		def workDirProperties = new WorkDirPropertiesProvider(project).provide()
+		def workDirProperties = new WorkDirPropertiesProvider(project, extension).provide()
 
 		def helmClient = new HelmRepository(chartProperties, workDirProperties, project.logger)
 		def gitChartRepository = new GitChartRepository(gitChartRepositoryProperties, workDirProperties, chartProperties, project.logger)

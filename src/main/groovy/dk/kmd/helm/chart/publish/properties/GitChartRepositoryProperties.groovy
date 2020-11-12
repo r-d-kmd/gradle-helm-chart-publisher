@@ -5,7 +5,6 @@ class GitChartRepositoryProperties {
 	private String url
 	private String username
 	private String password
-	private String chartRepoWorkDir
 
 	String getUrl() {
 		return url
@@ -17,9 +16,5 @@ class GitChartRepositoryProperties {
 
 	String getPassword() {
 		return password
-	}
-
-	String getChartRepoWorkDir() {
-		return chartRepoWorkDir
 	}
 }
