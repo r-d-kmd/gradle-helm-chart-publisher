@@ -36,7 +36,7 @@ class HelmRepository {
 	}
 
 	def reindexRepository(){
-		exec("helm repo index ${workDirProperties.chartRepoTmpDirectory}")
+		exec("helm repo index ${workDirProperties.chartRepoWorkingDirectory}")
 	}
 
 	def exec(String command) {
