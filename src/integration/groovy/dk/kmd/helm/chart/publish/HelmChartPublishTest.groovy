@@ -11,6 +11,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.yaml.snakeyaml.Yaml
 import spock.lang.Specification
+import spock.util.concurrent.PollingConditions
 
 class HelmChartPublishTest extends Specification {
 
@@ -61,8 +62,11 @@ class HelmChartPublishTest extends Specification {
 
 		then: "clone independent copy of git helm chart repository"
 		def clonedRepoDir = "$temporaryFolder.root.path/chart-repo"
-		new File(clonedRepoDir).deleteDir()
-		Grgit.clone(uri: GIT_CHART_REPO_URL, dir: clonedRepoDir)
+		new PollingConditions(timeout: 5).eventually {
+			new File(clonedRepoDir).deleteDir()
+			Grgit.clone(uri: GIT_CHART_REPO_URL, dir: clonedRepoDir)
+			assert new Yaml().load(new File("$clonedRepoDir/index.yaml").text).entries.size() == givenProjects.size()
+		}
 
 		and: "chart entry should be listed in the index"
 		def index = new Yaml().load(new File("$clonedRepoDir/index.yaml").text)
