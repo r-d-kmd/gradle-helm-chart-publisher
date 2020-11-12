@@ -19,7 +19,7 @@ class HelmRepository {
 	}
 
 	def version() {
-		exec("helm version --client")
+		return exec("helm version --client --short").split("v")[1]
 	}
 
 	def initClient() {
@@ -48,10 +48,10 @@ class HelmRepository {
 
 		if (proc.exitValue() == 0) {
 			logger.info("result: $sout")
+			return sout.toString()
 		} else {
 			logger.error("Command threw exception: $command")
 			throw new Exception(serr.toString())
 		}
-		return proc
 	}
 }

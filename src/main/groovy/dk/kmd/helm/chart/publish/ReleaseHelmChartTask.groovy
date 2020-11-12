@@ -22,8 +22,9 @@ class ReleaseHelmChartTask extends DefaultTask {
 		def helmClient = new HelmRepository(chartProperties, workDirProperties, project.logger)
 		def gitChartRepository = new GitChartRepository(gitChartRepositoryProperties, workDirProperties, chartProperties, project.logger)
 
-		helmClient.version()
-		helmClient.initClient()
+		if (helmClient.version().startsWith("2")) {
+			helmClient.initClient()
+		}
 		new Retryable(extension.retries, logger).execute {
 			gitChartRepository.cloneRepository()
 			helmClient.packageChart()
