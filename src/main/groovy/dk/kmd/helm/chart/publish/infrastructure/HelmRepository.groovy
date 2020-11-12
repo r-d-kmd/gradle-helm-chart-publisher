@@ -27,8 +27,8 @@ class HelmRepository {
 	}
 
 	def packageChart() {
-		def packagedChartDestination = "${workDirProperties.chartRepoTmpDirectory}/${chartProperties.chartName}"
-		Files.createDirectories(Paths.get(packagedChartDestination));
+		def packagedChartDestination = "${workDirProperties.chartRepoWorkingDirectory}/${chartProperties.chartName}"
+		Files.createDirectories(Paths.get(packagedChartDestination))
 		exec("helm package " +
 				 "--version ${chartProperties.chartVersion} " +
 				 "--destination ${packagedChartDestination} " +
