@@ -1,4 +1,5 @@
 # gradle-helm-chart-publisher
+[![Build Status](https://travis-ci.org/r-d-kmd/gradle-helm-chart-publisher.svg?branch=main)](https://travis-ci.org/r-d-kmd/gradle-helm-chart-publisher)
 
 _gradle package helm chart and publish to git repository plugin_ 
 
