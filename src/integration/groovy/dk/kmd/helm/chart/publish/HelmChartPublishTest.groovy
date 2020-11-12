@@ -66,13 +66,17 @@ class HelmChartPublishTest extends Specification {
 
 		and: "chart entry should be listed in the index"
 		def index = new Yaml().load(new File("$clonedRepoDir/index.yaml").text)
-		givenProjects.every { index.entries[it.chartName] != null }
-		givenProjects.every { project -> index.entries[project.chartName].version.any { it == project.chartVersion } }
+		givenProjects.forEach { project ->
+			def entry = index.entries[project.chartName]
+			assert entry != null
+			assert entry.version.any { it == project.chartVersion }
+		}
 
 		and: "package file exists under specified location"
-		givenProjects.every { project ->
+		givenProjects.forEach { project ->
 			def chartPathInRepository = index.entries[project.chartName].urls.flatten().first()
-			new File("${clonedRepoDir}/${chartPathInRepository}").exists()
+			assert chartPathInRepository != null
+			assert new File("${clonedRepoDir}/${chartPathInRepository}").exists()
 		}
 	}
 
