@@ -25,7 +25,7 @@ class HelmChartPublishTest extends Specification {
 		def givenProject = prepareProject(params)
 
 		when:
-		givenProject.runGradle("releaseHelmChart")
+		givenProject.runGradle("publishHelmChart")
 
 		then: "clone independent copy of git helm chart repository "
 		def clonedRepoDir = "$temporaryFolder.root.path/chart-repo"
@@ -57,7 +57,7 @@ class HelmChartPublishTest extends Specification {
 
 		when:
 		executorService.invokeAll(givenProjects.collect { project ->
-			({ project.runGradle("releaseHelmChart") } as Callable)
+			({ project.runGradle("publishHelmChart") } as Callable)
 		})
 
 		then: "clone independent copy of git helm chart repository"

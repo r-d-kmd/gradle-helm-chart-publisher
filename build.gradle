@@ -140,7 +140,7 @@ jacocoTestReport {
 pluginBundle {
 	website = 'https://github.com/r-d-kmd/gradle-helm-chart-publisher'
 	vcsUrl = 'https://github.com/r-d-kmd/gradle-helm-chart-publisher'
-	description = 'Helm chart release plugin that uses git repositories (GitHub for example) as a helm chart repository.'
+	description = 'Helm chart publish plugin using git repositories (GitHub for example) as a helm chart repository.'
 	tags = ['helm', 'chart', 'release', 'publish', 'git', 'github']
 
 	plugins {

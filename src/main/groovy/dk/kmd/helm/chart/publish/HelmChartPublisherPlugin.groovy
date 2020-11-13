@@ -9,7 +9,8 @@ class HelmChartPublisherPlugin implements Plugin<Project> {
 	@Override
 	void apply(Project project) {
 		project.extensions.create(HelmChartPublisherExtension.NAME, HelmChartPublisherExtension)
-		project.tasks.create("releaseHelmChart", ReleaseHelmChartTask)
+		project.tasks.create("releaseHelmChart", PublishHelmChartTask)
+		project.tasks.create("publishHelmChart", PublishHelmChartTask)
 	}
 
 }

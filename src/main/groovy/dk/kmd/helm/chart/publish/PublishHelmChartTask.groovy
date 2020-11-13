@@ -9,7 +9,7 @@ import dk.kmd.helm.chart.publish.properties.WorkDirPropertiesProvider
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class ReleaseHelmChartTask extends DefaultTask {
+class PublishHelmChartTask extends DefaultTask {
 
 	@TaskAction
 	def publishChart() {

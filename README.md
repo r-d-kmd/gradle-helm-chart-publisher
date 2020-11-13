@@ -21,7 +21,7 @@ plugins {
 ```
 
 ```
-$ ./gradlew releaseHelmChart
+$ ./gradlew publishHelmChart
 ```
 
 ## Requirements
