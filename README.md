@@ -11,6 +11,19 @@ This plugin packages the chart and leverages the possibility of using git reposi
 
 ## Basic usage
 
+- add chart definition to `helm` foldder in your project directory 
+
+```.
+   ├── src                    
+   ├── gradle                    
+   ├── helm                    
+   │   └── your-app-name
+   │       ├── templates
+   │       ├── values.yaml
+   │       └── Chart.yaml
+   └── ...
+```
+- add and configure plugin
 ```
 plugins {
      id 'dk.kmd.helm.chart.publish'
@@ -19,13 +32,14 @@ plugins {
     gitChartRepoUrl = https://github.com/path/to-your-repo.git"
  }
 ```
-
+- execute task
 ```
 $ ./gradlew publishHelmChart -PgitChartRepo.username=${GITUSERNAME} -PgitChartRepo.password=${GITPASSWORD} 
 ```
 
-## Requirements
+By default plugin releases chart placed in `helm` folder with `project.version` version.
 
+## Requirements
 
 Plugin requires helm client in version 2.x or 3.x to be installed.
 
