@@ -27,7 +27,7 @@ $ ./gradlew publishHelmChart
 ## Requirements
 
 
-Plugin requires helm client to be installed.
+Plugin requires helm client in version 2.x or 3.x to be installed.
 
 ## Workflow
 
