@@ -21,7 +21,7 @@ plugins {
 ```
 
 ```
-$ ./gradlew publishHelmChart
+$ ./gradlew publishHelmChart -PgitChartRepo.username=${GITUSERNAME} -PgitChartRepo.password=${GITPASSWORD} 
 ```
 
 ## Requirements
