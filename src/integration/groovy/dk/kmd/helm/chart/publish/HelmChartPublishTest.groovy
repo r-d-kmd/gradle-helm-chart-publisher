@@ -65,7 +65,7 @@ class HelmChartPublishTest extends Specification {
 		new PollingConditions(timeout: 5).eventually {
 			new File(clonedRepoDir).deleteDir()
 			Grgit.clone(uri: GIT_CHART_REPO_URL, dir: clonedRepoDir)
-			assert new Yaml().load(new File("$clonedRepoDir/index.yaml").text).entries.size() == givenProjects.size()
+			assert new Yaml().load(new File("$clonedRepoDir/index.yaml").text).entries.keySet().containsAll(givenProjects.chartName)
 		}
 
 		and: "chart entry should be listed in the index"
