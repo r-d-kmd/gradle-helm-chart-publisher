@@ -11,5 +11,5 @@ class HelmChartPublisherExtension {
 	String gitChartRepoWorkDir
 
 	String chartName
-	String chartDefinitionDir
+	String chartDefinitionPath
 }

@@ -27,16 +27,16 @@ class HelmRepository {
 	}
 
 	def packageChart() {
-		def packagedChartDestination = "${workDirProperties.chartRepoWorkingDirectory}/${chartProperties.chartName}"
+		def packagedChartDestination = "${workDirProperties.helmChartRepositoryPath}/${chartProperties.chartName}"
 		Files.createDirectories(Paths.get(packagedChartDestination))
 		exec("helm package " +
 				 "--version ${chartProperties.chartVersion} " +
 				 "--destination ${packagedChartDestination} " +
-				 "${chartProperties.chartDefinitionDir}")
+				 "${chartProperties.chartDefinitionPath}")
 	}
 
 	def reindexRepository(){
-		exec("helm repo index ${workDirProperties.chartRepoWorkingDirectory}")
+		exec("helm repo index ${workDirProperties.helmChartRepositoryPath}")
 	}
 
 	def exec(String command) {

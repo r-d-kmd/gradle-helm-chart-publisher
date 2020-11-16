@@ -17,7 +17,7 @@ class TestDataProvider {
 						gitUsername        : randomName(),
 						gitChartRepoWorkDir: randomAlphabetic(4),
 						chartName          : randomName(),
-						chartDefinitionDir : randomAlphabetic(8)]
+						chartDefinitionPath : randomAlphabetic(8)]
 		return new HelmChartPublisherExtension(defaults << params)
 	}
 

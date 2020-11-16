@@ -65,21 +65,21 @@ class ChartPropertiesProviderTest extends Specification {
 		given:
 		def givenDir = randomDir()
 		Project project = ProjectBuilder.builder().build()
-		project.extensions.extraProperties.set("chartDefinition.dir", givenDir)
-		def extension = extensionWithAnyParams(chartDefinitionDir: randomDir())
+		project.extensions.extraProperties.set("chart.definitionPath", givenDir)
+		def extension = extensionWithAnyParams(chartDefinitionPath: randomDir())
 
 		expect:
-		new ChartPropertiesProvider(project, extension).provide().chartDefinitionDir == givenDir
+		new ChartPropertiesProvider(project, extension).provide().chartDefinitionPath == givenDir
 	}
 
 	def "should resolve chart definition path from extension if set and property is missing"() {
 		given:
 		def givenDir = randomDir()
 		Project project = ProjectBuilder.builder().build()
-		def extension = extensionWithAnyParams(chartDefinitionDir: givenDir)
+		def extension = extensionWithAnyParams(chartDefinitionPath: givenDir)
 
 		expect:
-		new ChartPropertiesProvider(project, extension).provide().chartDefinitionDir == givenDir
+		new ChartPropertiesProvider(project, extension).provide().chartDefinitionPath == givenDir
 	}
 
 	def "should fall back to a default in project.buildDir for chart name when extension and property is missing"() {
@@ -90,6 +90,6 @@ class ChartPropertiesProviderTest extends Specification {
 		def chartProperties = new ChartPropertiesProvider(project, emptyExtension()).provide()
 
 		then:
-		chartProperties.chartDefinitionDir == "${project.projectDir}/helm/${chartProperties.chartName}"
+		chartProperties.chartDefinitionPath == "${project.projectDir}/helm/${chartProperties.chartName}"
 	}
 }

@@ -20,7 +20,7 @@ class WorkDirPropertiesProviderTest extends Specification {
 		def result = new WorkDirPropertiesProvider(project, extension).provide()
 
 		then:
-		result.chartRepoWorkingDirectory == "${result.chartRepoTmpDirectory}/${givenWorkDir}"
+		result.helmChartRepositoryPath == "${result.clonedGitChartRepositoryPath}/${givenWorkDir}"
 	}
 
 	def "should resolve git chart repository work directory from extension"() {
@@ -33,7 +33,7 @@ class WorkDirPropertiesProviderTest extends Specification {
 		def result = new WorkDirPropertiesProvider(project, extension).provide()
 
 		then:
-		result.chartRepoWorkingDirectory == "${result.chartRepoTmpDirectory}/${givenWorkDir}"
+		result.helmChartRepositoryPath == "${result.clonedGitChartRepositoryPath}/${givenWorkDir}"
 	}
 
 	def "should resolve to empty if git chart repository work directory not set"() {
@@ -45,6 +45,6 @@ class WorkDirPropertiesProviderTest extends Specification {
 		def result = new WorkDirPropertiesProvider(ProjectBuilder.builder().build(), extension).provide()
 
 		then:
-		result.chartRepoWorkingDirectory == "${result.chartRepoTmpDirectory}/"
+		result.helmChartRepositoryPath == "${result.clonedGitChartRepositoryPath}/"
 	}
 }

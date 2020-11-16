@@ -7,7 +7,7 @@ class ChartPropertiesProvider {
 
 	static String CHART_VERSION_PROPERTY = "chart.version"
 	static String CHART_NAME_PROPERTY = "chart.name"
-	static String CHART_DEFINITION_DIR_PROPERTY = "chartDefinition.dir"
+	static String CHART_DEFINITION_PATH_PROPERTY = "chart.definitionPath"
 
 	private Project project
 	private HelmChartPublisherExtension extension
@@ -18,7 +18,7 @@ class ChartPropertiesProvider {
 	}
 
 	ChartProperties provide() {
-		return new ChartProperties(chartVersion: getChartVersion(), chartName: getChartName(), chartDefinitionDir: getChartDefinitionDir())
+		return new ChartProperties(chartVersion: getChartVersion(), chartName: getChartName(), chartDefinitionPath: getChartDefinitionDir())
 	}
 
 	def getChartVersion() {
@@ -39,11 +39,11 @@ class ChartPropertiesProvider {
 	}
 
 	def getChartDefinitionDir() {
-		if (project.hasProperty(CHART_DEFINITION_DIR_PROPERTY)) {
-			return project.property(CHART_DEFINITION_DIR_PROPERTY)
+		if (project.hasProperty(CHART_DEFINITION_PATH_PROPERTY)) {
+			return project.property(CHART_DEFINITION_PATH_PROPERTY)
 		}
-		if (extension.chartDefinitionDir != null) {
-			return extension.chartDefinitionDir
+		if (extension.chartDefinitionPath != null) {
+			return extension.chartDefinitionPath
 		}
 		return "${project.projectDir}/helm/${getChartName()}"
 	}

@@ -22,12 +22,12 @@ class GitChartRepository {
 	}
 
 	def cloneRepository() {
-		deleteDir(workDirProperties.chartRepoTmpDirectory)
-		Grgit.clone(dir: workDirProperties.chartRepoTmpDirectory, uri: gitChartRepositoryProperties.url, credentials: new Credentials(gitChartRepositoryProperties.username, gitChartRepositoryProperties.password))
+		deleteDir(workDirProperties.clonedGitChartRepositoryPath)
+		Grgit.clone(dir: workDirProperties.clonedGitChartRepositoryPath, uri: gitChartRepositoryProperties.url, credentials: new Credentials(gitChartRepositoryProperties.username, gitChartRepositoryProperties.password))
 	}
 
 	def pushToRepository() {
-		def grgit = Grgit.open(dir: workDirProperties.chartRepoTmpDirectory, credentials: new Credentials(gitChartRepositoryProperties.username, gitChartRepositoryProperties.password))
+		def grgit = Grgit.open(dir: workDirProperties.clonedGitChartRepositoryPath, credentials: new Credentials(gitChartRepositoryProperties.username, gitChartRepositoryProperties.password))
 		grgit.add(patterns: [".", "index.yaml"])
 		logger.info("Committing files: ${grgit.status().staged.allChanges}")
 		grgit.commit(message: "Publishing ${chartProperties.chartName} chart in version ${chartProperties.chartVersion}", all: true)

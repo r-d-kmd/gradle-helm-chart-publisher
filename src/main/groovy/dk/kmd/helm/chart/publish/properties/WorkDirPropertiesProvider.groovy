@@ -17,8 +17,8 @@ class WorkDirPropertiesProvider {
 	}
 
 	WorkDirProperties provide() {
-		def chartRepoTmpDirectory = "${project.buildDir}/helm-chart-repository"
-		return new WorkDirProperties(chartRepoTmpDirectory: chartRepoTmpDirectory, chartRepoWorkingDirectory: "${chartRepoTmpDirectory}/${chartRepositoryWorkDir()}")
+		def clonedGitChartRepositoryPath = "${project.buildDir}/helm-chart-repository"
+		return new WorkDirProperties(clonedGitChartRepositoryPath: clonedGitChartRepositoryPath, helmChartRepositoryPath: "${clonedGitChartRepositoryPath}/${chartRepositoryWorkDir()}")
 	}
 
 

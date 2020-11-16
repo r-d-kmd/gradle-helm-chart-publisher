@@ -2,14 +2,14 @@ package dk.kmd.helm.chart.publish.properties
 
 class WorkDirProperties {
 
-	private String chartRepoTmpDirectory
-	private String chartRepoWorkingDirectory
+	private String clonedGitChartRepositoryPath
+	private String helmChartRepositoryPath
 
-	String getChartRepoTmpDirectory() {
-		return chartRepoTmpDirectory
+	String getClonedGitChartRepositoryPath() {
+		return clonedGitChartRepositoryPath
 	}
 
-	String getChartRepoWorkingDirectory() {
-		return chartRepoWorkingDirectory
+	String getHelmChartRepositoryPath() {
+		return helmChartRepositoryPath
 	}
 }

@@ -4,7 +4,7 @@ class ChartProperties {
 
 	private String chartName
 	private String chartVersion
-	private String chartDefinitionDir
+	private String chartDefinitionPath
 
 	String getChartName() {
 		return chartName
@@ -14,7 +14,7 @@ class ChartProperties {
 		return chartVersion
 	}
 
-	String getChartDefinitionDir() {
-		return chartDefinitionDir
+	String getChartDefinitionPath() {
+		return chartDefinitionPath
 	}
 }
