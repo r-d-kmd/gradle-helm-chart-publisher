@@ -1,9 +1,6 @@
 variables:
   jdkVersion: "1.8"
 
-trigger:
-  - master
-
 jobs:
   - job: Release
     displayName: Test, build and release
