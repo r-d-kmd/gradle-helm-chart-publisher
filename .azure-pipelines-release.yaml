@@ -1,6 +1,16 @@
 variables:
   jdkVersion: "1.8"
 
+parameters:
+  - name: releaseIncrementer
+    displayName: Release incrementer
+    type: string
+    default: incrementMinor
+    values:
+      - incrementPatch
+      - incrementMinor
+      - incrementMajor
+
 jobs:
   - job: Release
     displayName: Test, build and release
@@ -18,7 +28,7 @@ jobs:
         displayName: release version
         inputs:
           tasks: release
-          options: -Prelease.disableChecks -Prelease.pushTagsOnly -Prelease.customUsername=$(git.username) -Prelease.customPassword=$(git.password) -Prelease.versionIncrementer=$(release.incrementer)
+          options: -Prelease.disableChecks -Prelease.pushTagsOnly -Prelease.customUsername=$(git.username) -Prelease.customPassword=$(git.password) -Prelease.versionIncrementer=${{ parameters.releaseIncrementer }}
           jdkVersionOption: $(jdkVersion)
       - task: Gradle@2
         displayName: publishPlugin
