@@ -6,7 +6,7 @@ trigger:
 
 jobs:
   - job: Release
-    displayName: Test and build
+    displayName: Test, build and release
     steps:
       - task: HelmInstaller@1
         displayName: Helm installer
