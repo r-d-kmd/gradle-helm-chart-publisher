@@ -1,0 +1,35 @@
+variables:
+  jdkVersion: "1.8"
+
+trigger:
+  - master
+
+jobs:
+  - job: Release
+    displayName: Test and build
+    steps:
+      - task: HelmInstaller@1
+        displayName: Helm installer
+        inputs:
+          helmVersionToInstall: "2.16.3"
+      - task: Gradle@2
+        displayName: clean check
+        inputs:
+          tasks: clean check
+          jdkVersionOption: $(jdkVersion)
+      - task: Gradle@2
+        displayName: release version
+        inputs:
+          tasks: release
+          options: -Prelease.disableChecks -Prelease.pushTagsOnly -Prelease.customUsername=$(git.username) -Prelease.customPassword=$(git.password) -Prelease.versionIncrementer=$(release.incrementer)
+          jdkVersionOption: $(jdkVersion)
+      - task: Gradle@2
+        displayName: publishPlugin
+        inputs:
+          tasks: publishPlugin
+          options: -Dgradle.publish.key=$(gradle.portal.publish.key) -Dgradle.publish.secret=$(gradle.portal.publish.secret)
+          jdkVersionOption: $(jdkVersion)
+      - script: |
+          FinalVersion=`cat build/version`
+          echo "##vso[build.updatebuildnumber]$FinalVersion"
+        displayName: Set build version
