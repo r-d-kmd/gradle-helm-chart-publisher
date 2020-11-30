@@ -37,6 +37,6 @@ jobs:
           options: -Dgradle.publish.key=$(gradle.portal.publish.key) -Dgradle.publish.secret=$(gradle.portal.publish.secret)
           jdkVersionOption: $(jdkVersion)
       - script: |
-          FinalVersion=`cat build/version`
+          FinalVersion=`./gradlew properties -q | grep "version:" | awk '{print $2}'`
           echo "##vso[build.updatebuildnumber]$FinalVersion"
         displayName: Set build version
