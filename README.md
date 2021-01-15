@@ -61,5 +61,5 @@ Git username | Git repository username | - | `gitChartRepo.username` | `HELM_CHA
 Git password | Git repository password | - | `gitChartRepo.password` | `HELM_CHART_PUBLISH_GIT_REPO_PASSWORD` | -
 Git repository working directory | Directory in git repository where helm chart repository is stored | / (root folder of the repository) | `gitChartRepo.workDir` | - | `helmChartPublisher.gitChartRepoWorkDir`
 Chart version | Version under which the chart will be published | project.version |  `chart.version` | - | -
-Chart name | Version under which the chart will be published | project.name |  `chart.name` | - | `helmChartPublisher.chartName`
+Chart name | Name of the chart (must be the same as `name` in chart `valyes.yaml`  | project.name |  `chart.name` | - | `helmChartPublisher.chartName`
 Chart definition path | Where in the project chart definition is stored | `${projectDir}/helm/$chartName` | `chart.definitionPath` | - | `helmChartPublisher.chartDefinitionPath`
