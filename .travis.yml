@@ -4,8 +4,8 @@ language: java
 
 env:
   global:
-    - HELM_URL=https://storage.googleapis.com/kubernetes-helm
-    - HELM_TGZ=helm-v2.14.1-linux-amd64.tar.gz
+    - HELM_URL=https://get.helm.sh
+    - HELM_TGZ=helm-v2.17.0-linux-amd64.tar.gz
 
 install:
   - wget -q ${HELM_URL}/${HELM_TGZ}
