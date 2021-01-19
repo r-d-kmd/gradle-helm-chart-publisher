@@ -47,6 +47,7 @@ Plugin requires helm client in version 2.x or 3.x to be installed.
 
 - clone git repository where helm chart definitions are stored
 - init helm client
+- update [chart dependencies](https://helm.sh/docs/helm/helm_dependency/)
 - package chart
 - reindex helm chart repository
 - push changes to git repository 

@@ -26,6 +26,10 @@ class HelmRepository {
 		exec("helm init --client-only")
 	}
 
+	def updateDependencies() {
+		exec("helm dependency update $chartProperties.chartDefinitionPath")
+	}
+
 	def packageChart() {
 		def packagedChartDestination = "${workDirProperties.helmChartRepositoryPath}/${chartProperties.chartName}"
 		Files.createDirectories(Paths.get(packagedChartDestination))

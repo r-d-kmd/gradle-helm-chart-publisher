@@ -26,6 +26,7 @@ class PublishHelmChartTask extends DefaultTask {
 			helmClient.initClient()
 		}
 		new Retryable(extension.retries, logger).execute {
+			helmClient.updateDependencies()
 			gitChartRepository.cloneRepository()
 			helmClient.packageChart()
 			helmClient.reindexRepository()
