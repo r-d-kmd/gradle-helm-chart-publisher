@@ -3,6 +3,8 @@
 
 _gradle package helm chart and publish to git repository plugin_ 
 
+[Gradle Plugin Portal](https://plugins.gradle.org/plugin/dk.kmd.helm.chart.publish)
+
 Helm chart is an integral part of a project, more often its definition is placed as closest to code as possible. 
 
 In order to be able to develop both at the same time helm allows to do [chart versioning](https://v2.helm.sh/docs/developing_charts/#charts-and-versioning).
