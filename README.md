@@ -1,5 +1,6 @@
 # gradle-helm-chart-publisher
 [![Build Status](https://travis-ci.org/r-d-kmd/gradle-helm-chart-publisher.svg?branch=main)](https://travis-ci.org/r-d-kmd/gradle-helm-chart-publisher)
+[![Latest release](https://img.shields.io/maven-metadata/v.svg?label=helm-chart-publisher&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fdk%2Fkmd%2Fhelm%2Fchart%2Fpublish%2Fhelm-chart-publisher%2Fmaven-metadata.xml?)](https://plugins.gradle.org/plugin/dk.kmd.helm.chart.publish)
 
 _gradle package helm chart and publish to git repository plugin_ 
 
@@ -64,5 +65,5 @@ Git username | Git repository username | - | `gitChartRepo.username` | `HELM_CHA
 Git password | Git repository password | - | `gitChartRepo.password` | `HELM_CHART_PUBLISH_GIT_REPO_PASSWORD` | -
 Git repository working directory | Directory in git repository where helm chart repository is stored | / (root folder of the repository) | `gitChartRepo.workDir` | - | `helmChartPublisher.gitChartRepoWorkDir`
 Chart version | Version under which the chart will be published | project.version |  `chart.version` | - | -
-Chart name | Name of the chart (must be the same as `name` in chart `valyes.yaml`  | project.name |  `chart.name` | - | `helmChartPublisher.chartName`
+Chart name | Name of the chart (must be the same as `name` in chart `valyes.yaml`)  | project.name |  `chart.name` | - | `helmChartPublisher.chartName`
 Chart definition path | Where in the project chart definition is stored | `${projectDir}/helm/$chartName` | `chart.definitionPath` | - | `helmChartPublisher.chartDefinitionPath`
