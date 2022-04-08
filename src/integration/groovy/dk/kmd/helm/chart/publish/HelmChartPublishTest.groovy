@@ -3,12 +3,12 @@ package dk.kmd.helm.chart.publish
 import static dk.kmd.helm.chart.publish.properties.TestDataProvider.randomName
 import static dk.kmd.helm.chart.publish.properties.TestDataProvider.randomVersion
 
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import org.ajoberstar.grgit.Grgit
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import org.yaml.snakeyaml.Yaml
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
@@ -17,8 +17,12 @@ class HelmChartPublishTest extends Specification {
 
 	static final String GIT_CHART_REPO_URL = "http://localhost:8080/chart-repo.git"
 
-	@Rule
-	TemporaryFolder temporaryFolder = new TemporaryFolder()
+	Path temporaryFolder
+
+	void setup() {
+		temporaryFolder = Files.createTempDirectory("test")
+		temporaryFolder.toFile().deleteOnExit()
+	}
 
 	def "should init repository and publish multiple charts one by one"() {
 		given:
@@ -28,7 +32,7 @@ class HelmChartPublishTest extends Specification {
 		givenProject.runGradle("publishHelmChart")
 
 		then: "clone independent copy of git helm chart repository "
-		def clonedRepoDir = "$temporaryFolder.root.path/chart-repo"
+		def clonedRepoDir = "${temporaryFolder.toFile().canonicalPath}/chart-repo"
 		new File(clonedRepoDir).deleteDir()
 		Grgit.clone(uri: GIT_CHART_REPO_URL, dir: clonedRepoDir)
 
@@ -61,7 +65,7 @@ class HelmChartPublishTest extends Specification {
 		})
 
 		then: "clone independent copy of git helm chart repository"
-		def clonedRepoDir = "$temporaryFolder.root.path/chart-repo"
+		def clonedRepoDir = "${temporaryFolder.toFile().canonicalPath}/chart-repo"
 		new PollingConditions(timeout: 5).eventually {
 			new File(clonedRepoDir).deleteDir()
 			Grgit.clone(uri: GIT_CHART_REPO_URL, dir: clonedRepoDir)
@@ -85,7 +89,7 @@ class HelmChartPublishTest extends Specification {
 	}
 
 	def prepareProject(Map params = [:]) {
-		return new TestProject(params << [projectRoot    : temporaryFolder.newFolder(params.projectName),
+		return new TestProject(params << [projectRoot    : temporaryFolder.resolve(params.projectName as String).toFile(),
 										  gitChartRepoUrl: GIT_CHART_REPO_URL]).prepare()
 	}
 

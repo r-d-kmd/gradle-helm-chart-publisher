@@ -59,6 +59,7 @@ class TestProject {
 	}
 
 	private File newFile(File directory, def name) {
+		directory.mkdirs()
 		def file = new File(directory, name)
 		file.createNewFile()
 		return file

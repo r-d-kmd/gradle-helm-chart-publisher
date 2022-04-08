@@ -1,12 +1,11 @@
 plugins {
 	id 'groovy'
 	id 'java-gradle-plugin'
-	id 'maven'
 	id 'jacoco'
-	id 'com.gradle.plugin-publish' version '0.12.0'
-	id 'pl.allegro.tech.build.axion-release' version '1.12.1'
+	id 'com.gradle.plugin-publish' version '0.21.0'
+	id 'pl.allegro.tech.build.axion-release' version '1.13.6'
 	id 'io.codearte.nexus-staging' version '0.11.0' apply false
-	id 'com.bmuschko.docker-remote-api' version '3.6.2'
+	id 'com.bmuschko.docker-remote-api' version '7.3.0'
 }
 
 group 'dk.kmd.helm.chart.publish'
@@ -35,46 +34,56 @@ sourceSets {
 	}
 
 	integration {
-		java.srcDir project.file('src/integration/java')
-		groovy.srcDir project.file('src/integration/groovy')
-
-		resources.srcDir project.file('src/integration/resources')
-		resources.srcDir project.sourceSets.test.resources
-		resources.srcDir project.sourceSets.main.resources
-
-		compileClasspath = project.sourceSets.main.output +
-			project.sourceSets.test.output +
-			project.configurations.testRuntime
-		runtimeClasspath = output + compileClasspath
+		compileClasspath += main.output + test.output
+		runtimeClasspath += output + main.output + test.output
+		groovy.srcDir 'src/integration/groovy'
+		resources.srcDir file('src/integration/resources')
 	}
 }
 
 dependencies {
-	compile gradleApi()
-	compile localGroovy()
+	implementation gradleApi()
+	implementation localGroovy()
 
-	compile 'org.ajoberstar.grgit:grgit-core:3.1.0'
+	implementation 'org.ajoberstar.grgit:grgit-core:3.1.0'
 
-	testCompile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
+	testImplementation(platform('org.spockframework:spock-bom:2.1-M2-groovy-3.0'))
+	testImplementation('org.spockframework:spock-core') {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
-	testCompile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
-	testCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
-	testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
+	testImplementation 'org.yaml:snakeyaml:1.30'
+	testImplementation 'org.apache.commons:commons-lang3:3.0'
+	testImplementation 'uk.org.webcompere:system-stubs-core:2.0.1'
 
-	testCompile gradleTestKit()
+	testImplementation gradleTestKit()
 }
 
-test {
+tasks.withType(Test) {
+	useJUnitPlatform()
+	jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
 	testLogging {
-		events 'passed', 'skipped', 'failed'
+		events 'PASSED', 'FAILED', 'SKIPPED'
+		showStandardStreams = (project.hasProperty('testLoggingEnabled') && Boolean.valueOf(project.property('testLoggingEnabled').toString()))
 		exceptionFormat = 'full'
+	}
+	afterSuite { desc, result ->
+		if (!desc.parent) {
+			println "\nTest result: ${result.resultType}"
+			println "Test summary: ${result.testCount} tests, " +
+						"${result.successfulTestCount} succeeded, " +
+						"${result.failedTestCount} failed, " +
+						"${result.skippedTestCount} skipped"
+		}
 	}
 }
 
+
 project.configurations {
+	integrationImplementation.extendsFrom testImplementation
+	integrationRuntime.extendsFrom testRuntime
+
 	integration {
-		extendsFrom project.configurations.testRuntime
+		extendsFrom project.configurations.testImplementation
 		description = 'Dependencies for integration tests'
 		transitive = true
 		visible = true
@@ -83,31 +92,28 @@ project.configurations {
 
 task buildDockerImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
 	inputDir = file('docker')
-	tag = 'test/helm-chart-publisher-remote:latest'
+	images.add('test/helm-chart-publisher-remote:latest')
 }
 
 task createDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
 	dependsOn buildDockerImage
-	targetImageId { buildDockerImage.getImageId() }
-	portBindings = ['8080:80']
+	targetImageId buildDockerImage.getImageId()
+	hostConfig.portBindings = ['8080:80']
+	hostConfig.autoRemove = true
 }
 
 task startDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerStartContainer) {
 	dependsOn createDockerContainer
-	targetContainerId { createDockerContainer.getContainerId() }
+	targetContainerId createDockerContainer.getContainerId()
 }
 
 task stopDockerContainer(type: com.bmuschko.gradle.docker.tasks.container.DockerStopContainer) {
-	targetContainerId { createDockerContainer.getContainerId() }
+	targetContainerId createDockerContainer.getContainerId()
 }
 
 task integrationTest(type: Test) {
 	testClassesDirs = project.sourceSets.integration.output.classesDirs
-	classpath = project.sourceSets.main.output +
-		project.sourceSets.test.output +
-		project.sourceSets.integration.runtimeClasspath +
-		project.configurations.testRuntime +
-		project.configurations.integrationRuntime
+	classpath = sourceSets.integration.runtimeClasspath
 
 	testLogging {
 		events 'passed', 'skipped', 'failed'
