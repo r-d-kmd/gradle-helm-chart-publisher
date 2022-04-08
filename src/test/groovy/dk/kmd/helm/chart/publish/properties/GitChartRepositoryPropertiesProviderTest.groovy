@@ -4,18 +4,15 @@ import static dk.kmd.helm.chart.publish.properties.TestDataProvider.emptyExtensi
 import static dk.kmd.helm.chart.publish.properties.TestDataProvider.extensionWithAnyParams
 import static dk.kmd.helm.chart.publish.properties.TestDataProvider.randomName
 import static dk.kmd.helm.chart.publish.properties.TestDataProvider.randomUrl
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Rule
-import org.junit.contrib.java.lang.system.EnvironmentVariables
 import spock.lang.Specification
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables
 
 class GitChartRepositoryPropertiesProviderTest extends Specification {
 
-	@Rule
-	public final EnvironmentVariables environmentVariables = new EnvironmentVariables()
+	private EnvironmentVariables environmentVariables = new EnvironmentVariables()
 
 	def "should resolve git repository url from property if set"() {
 		given:
@@ -48,22 +45,28 @@ class GitChartRepositoryPropertiesProviderTest extends Specification {
 	def "should resolve git username from property if set"() {
 		given:
 		def givenUsername = randomName()
-		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_USERNAME", randomName())
-		Project project = ProjectBuilder.builder().build()
-		project.extensions.extraProperties.set("gitChartRepo.username", givenUsername)
+		def resultUsername = ""
+		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_USERNAME", randomName()).execute(() -> {
+			Project project = ProjectBuilder.builder().build()
+			project.extensions.extraProperties.set("gitChartRepo.username", givenUsername)
+			resultUsername = new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().username
+		})
 
 		expect:
-		new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().username == givenUsername
+		resultUsername == givenUsername
 	}
 
 	def "should resolve git username from env variable if set"() {
 		given:
-		def givenUsername = randomName()
-		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_USERNAME", givenUsername)
-		Project project = ProjectBuilder.builder().build()
+		def givenUsername = "user-from-env"
+		def resultUsername = ""
+		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_USERNAME", givenUsername).execute(() -> {
+			Project project = ProjectBuilder.builder().build()
+			resultUsername = new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().username
+		} )
 
 		expect:
-		new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().username == givenUsername
+		resultUsername == givenUsername
 	}
 
 	def "should resolve git username from extension if not set"() {
@@ -78,23 +81,29 @@ class GitChartRepositoryPropertiesProviderTest extends Specification {
 
 	def "should resolve git password from property if set"() {
 		given:
-		def givenPassword = randomAlphabetic(8)
-		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_PASSWORD", randomAlphabetic(8))
-		Project project = ProjectBuilder.builder().build()
-		project.extensions.extraProperties.set("gitChartRepo.password", givenPassword)
+		def givenPassword = "pass-from-property"
+		def resultPassword = ""
+		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_PASSWORD", "pass-from-envs1").execute(() -> {
+			Project project = ProjectBuilder.builder().build()
+			project.extensions.extraProperties.set("gitChartRepo.password", givenPassword)
+			resultPassword = new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().password
+		})
 
 		expect:
-		new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().password == givenPassword
+		resultPassword == givenPassword
 	}
 
 	def "should resolve git password from env variable if set"() {
 		given:
-		def givenPassword = randomAlphabetic(8)
-		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_PASSWORD", givenPassword)
-		Project project = ProjectBuilder.builder().build()
+		def givenPassword = "pass-from-envs2"
+		def resultPassword = ""
+		environmentVariables.set("HELM_CHART_PUBLISH_GIT_REPO_PASSWORD", givenPassword).execute(() -> {
+			Project project = ProjectBuilder.builder().build()
+			resultPassword = new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().password
+		})
 
 		expect:
-		new GitChartRepositoryPropertiesProvider(project, extensionWithAnyParams()).provide().password == givenPassword
+		resultPassword == givenPassword
 	}
 
 	def "should resolve git password to null if not set"() {
