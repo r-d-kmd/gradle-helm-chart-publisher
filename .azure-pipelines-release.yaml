@@ -14,6 +14,8 @@ parameters:
 jobs:
   - job: Release
     displayName: Test, build and release
+    pool:
+      vmImage: 'ubuntu-20.04'
     steps:
       - task: HelmInstaller@1
         displayName: Helm installer
